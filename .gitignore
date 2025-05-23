@@ -35,3 +35,15 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Java
+helloapi/target/
+helloapi/.idea/
+helloapi/.classpath
+helloapi/.project
+
+# Node.js
+react-tutorial/node_modules/
+react-tutorial/dist/
+react-tutorial/.env
+
