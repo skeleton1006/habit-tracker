@@ -1,24 +1,106 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  Box,
+  Button,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  useToast,
+} from '@chakra-ui/react'
+
+type Habit = {
+  id: number
+  name: string
+  createdAt: string
+}
 
 function App() {
-  const [message, setMessage] = useState('')
+  const [habits, setHabits] = useState<Habit[]>([])
+  const [newHabit, setNewHabit] = useState('')
+  const toast = useToast()
 
-  const fetchHello = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/hello')
-      const text = await response.text()
-      setMessage(text)
-    } catch (error) {
-      setMessage('API呼び出しに失敗しました')
+  const fetchHabits = async () => {
+    const res = await fetch('http://localhost:8080/api/habits')
+    const data = await res.json()
+    setHabits(data)
+  }
+
+  useEffect(() => {
+    fetchHabits()
+  }, [])
+
+  const handleAddHabit = async () => {
+    if (!newHabit.trim()) {
+      toast({
+        title: '習慣名を入力してください。',
+        status: 'warning',
+        duration: 2000,
+        isClosable: true,
+      })
+      return
+    }
+
+    const res = await fetch('http://localhost:8080/api/habits', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: newHabit }),
+    })
+
+    if (res.ok) {
+      setNewHabit('')
+      toast({
+        title: '習慣を追加しました！',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      })
+      fetchHabits()
+    } else {
+      toast({
+        title: '追加に失敗しました',
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+      })
     }
   }
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>習慣トラッカー：フロントテスト</h1>
-      <button onClick={fetchHello}>Say Hello</button>
-      <p>{message}</p>
-    </div>
+    <Box p={8}>
+      <Heading mb={4}>習慣一覧</Heading>
+
+      <Stack direction='row' mb={6}>
+        <Input
+          placeholder='新しい習慣を入力'
+          value={newHabit}
+          onChange={(e) => setNewHabit(e.target.value)}
+        />
+        <Button colorScheme='blue' onClick={handleAddHabit}>
+          追加
+        </Button>
+      </Stack>
+
+      <Stack spacing={4}>
+        {habits.map((habit) => (
+          <Box
+            key={habit.id}
+            p={4}
+            borderWidth='1px'
+            borderRadius='md'
+            bg='blue.50'
+            boxShadow='sm'
+          >
+            <Text fontSize='lg' fontWeight='bold'>
+              {habit.name}
+            </Text>
+            <Text fontSize='sm' color='gray.500'>
+              登録日時: {new Date(habit.createdAt).toLocaleString()}
+            </Text>
+          </Box>
+        ))}
+      </Stack>
+    </Box>
   )
 }
 
