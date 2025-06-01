@@ -43,6 +43,7 @@ helloapi/.classpath
 helloapi/.project
 
 # Node.js
+node_modules/
 react-tutorial/node_modules/
 react-tutorial/dist/
 react-tutorial/.env

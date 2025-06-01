@@ -3,4 +3,28 @@ body {
     margin: 0;
     font-family: sans-serif;
   }
+
+.highlight {
+  background-color: #48BB78 !important;
+  color: white !important;
+}
+
+.react-calendar {
+  width: 100% !important;
+  border: none !important;
+  font-family: inherit;
+}
+
+.react-calendar__tile {
+  padding: 1em 0.5em !important;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #E6FFFA !important;
+}
+
+.react-calendar__tile--now {
+  background-color: #B2F5EA !important;
+}
   
